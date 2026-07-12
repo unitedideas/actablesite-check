@@ -22,3 +22,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm test
       - run: npm pack --dry-run
+      - name: Run the local GitHub Action
+        id: crawler-policy
+        uses: ./
+        with:
+          website: example.com
+          fail-on-blocked: "false"
+      - name: Verify action outputs
+        env:
+          ALLOWED_COUNT: ${{ steps.crawler-policy.outputs.allowed-count }}
+          BLOCKED_COUNT: ${{ steps.crawler-policy.outputs.blocked-count }}
+        run: test "$((ALLOWED_COUNT + BLOCKED_COUNT))" -eq 8
