@@ -40,6 +40,21 @@ Print a conservative starter policy that allows discovery while restricting name
 actablesite-check --starter
 ```
 
+## GitHub Action
+
+Run the same check in CI without installing a package:
+
+```yaml
+- name: Check AI crawler policy
+  id: ai-crawlers
+  uses: unitedideas/actablesite-check@v1
+  with:
+    website: example.com
+    fail-on-blocked: "false"
+```
+
+The action writes a job summary and exposes `result`, `allowed-count`, and `blocked-count` outputs. Set `fail-on-blocked` to `"true"` when any blocked checked token should fail the workflow.
+
 ## What the result means
 
 The parser follows robots.txt group precedence, longest matching path, wildcard paths, end anchors, and Allow-on-tie behavior for the requested homepage path.

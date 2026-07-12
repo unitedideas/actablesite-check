@@ -1,0 +1,37 @@
+name: ActableSite AI Crawler Policy Check
+description: Check robots.txt access for eight OpenAI, Anthropic, Perplexity, and Google AI crawler tokens.
+author: ActableSite
+
+inputs:
+  website:
+    description: Public website hostname or URL to check.
+    required: true
+  fail-on-blocked:
+    description: Fail the workflow when one or more checked crawler tokens are blocked.
+    required: false
+    default: "false"
+
+outputs:
+  result:
+    description: Compact JSON result for the complete policy check.
+    value: ${{ steps.check.outputs.result }}
+  allowed-count:
+    description: Number of checked crawler tokens allowed for the homepage path.
+    value: ${{ steps.check.outputs.allowed-count }}
+  blocked-count:
+    description: Number of checked crawler tokens blocked for the homepage path.
+    value: ${{ steps.check.outputs.blocked-count }}
+
+runs:
+  using: composite
+  steps:
+    - id: check
+      shell: bash
+      env:
+        INPUT_WEBSITE: ${{ inputs.website }}
+        INPUT_FAIL_ON_BLOCKED: ${{ inputs.fail-on-blocked }}
+      run: node "$GITHUB_ACTION_PATH/action/run.mjs"
+
+branding:
+  icon: shield
+  color: green
