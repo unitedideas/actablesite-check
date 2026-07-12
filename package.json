@@ -2,6 +2,7 @@
   "name": "actablesite-check",
   "version": "1.0.0",
   "description": "Check robots.txt policy for eight OpenAI, Anthropic, Perplexity, and Google AI crawler tokens.",
+  "author": "ActableSite",
   "type": "module",
   "bin": {
     "actablesite-check": "./bin/actablesite-check.js"
@@ -12,6 +13,20 @@
   "engines": {
     "node": ">=20"
   },
+  "files": [
+    "bin/",
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unitedideas/actablesite-check.git"
+  },
+  "bugs": {
+    "url": "https://github.com/unitedideas/actablesite-check/issues"
+  },
+  "homepage": "https://actablesite.com/ai-crawler-checker",
   "keywords": [
     "robots.txt",
     "AI crawler",
