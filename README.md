@@ -25,7 +25,7 @@ actablesite-check example.com
 Or run the tagged release directly from GitHub:
 
 ```bash
-npx github:unitedideas/actablesite-check#v1.0.0 example.com
+npx github:unitedideas/actablesite-check#v1.1.0 example.com
 ```
 
 Machine-readable output:
@@ -54,6 +54,8 @@ Run the same check in CI without installing a package:
 ```
 
 The action writes a job summary and exposes `result`, `allowed-count`, and `blocked-count` outputs. Set `fail-on-blocked` to `"true"` when any blocked checked token should fail the workflow.
+
+[Copy a scheduled or pull-request workflow](https://actablesite.com/ai-crawler-github-action) and review when to observe policy drift versus fail a deployment.
 
 ## What the result means
 
