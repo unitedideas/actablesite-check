@@ -15,20 +15,29 @@ The checker separates search discovery, user-requested retrieval, model training
 
 Node.js 20 or newer is required.
 
+Install with Homebrew on macOS or Linux:
+
 ```bash
-npx github:unitedideas/actablesite-check example.com
+brew install unitedideas/tap/actablesite-check
+actablesite-check example.com
+```
+
+Or run the tagged release directly from GitHub:
+
+```bash
+npx github:unitedideas/actablesite-check#v1.0.0 example.com
 ```
 
 Machine-readable output:
 
 ```bash
-npx github:unitedideas/actablesite-check example.com --json
+actablesite-check example.com --json
 ```
 
 Print a conservative starter policy that allows discovery while restricting named training controls:
 
 ```bash
-npx github:unitedideas/actablesite-check --starter
+actablesite-check --starter
 ```
 
 ## What the result means
