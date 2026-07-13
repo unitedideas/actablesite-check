@@ -1,5 +1,5 @@
-name: ActableSite AI Crawler Policy Check
-description: Check robots.txt access for eight OpenAI, Anthropic, Perplexity, and Google AI crawler tokens.
+name: ActableSite AI Crawler Policy and Edge Check
+description: Check robots.txt policy and optional synthetic edge responses for OpenAI, Anthropic, and Perplexity search crawlers.
 author: ActableSite
 
 inputs:
@@ -8,6 +8,14 @@ inputs:
     required: true
   fail-on-blocked:
     description: Fail the workflow when one or more checked crawler tokens are blocked.
+    required: false
+    default: "false"
+  check-edge-responses:
+    description: Send synthetic OAI-SearchBot, Claude-SearchBot, and PerplexityBot requests to the public homepage.
+    required: false
+    default: "false"
+  fail-on-restricted:
+    description: Fail when an enabled synthetic edge response is restricted (for example HTTP 401, 403, or 429).
     required: false
     default: "false"
 
@@ -21,6 +29,12 @@ outputs:
   blocked-count:
     description: Number of checked crawler tokens blocked for the homepage path.
     value: ${{ steps.check.outputs.blocked-count }}
+  edge-result:
+    description: Compact JSON result for the optional synthetic homepage responses, or null when disabled.
+    value: ${{ steps.check.outputs.edge-result }}
+  restricted-count:
+    description: Number of enabled synthetic homepage responses classified as restricted.
+    value: ${{ steps.check.outputs.restricted-count }}
 
 runs:
   using: composite
@@ -30,6 +44,8 @@ runs:
       env:
         INPUT_WEBSITE: ${{ inputs.website }}
         INPUT_FAIL_ON_BLOCKED: ${{ inputs.fail-on-blocked }}
+        INPUT_CHECK_EDGE_RESPONSES: ${{ inputs.check-edge-responses }}
+        INPUT_FAIL_ON_RESTRICTED: ${{ inputs.fail-on-restricted }}
       run: node "$GITHUB_ACTION_PATH/action/run.mjs"
 
 branding:

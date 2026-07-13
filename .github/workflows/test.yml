@@ -28,8 +28,11 @@ jobs:
         with:
           website: example.com
           fail-on-blocked: "false"
+          check-edge-responses: "true"
+          fail-on-restricted: "false"
       - name: Verify action outputs
         env:
           ALLOWED_COUNT: ${{ steps.crawler-policy.outputs.allowed-count }}
           BLOCKED_COUNT: ${{ steps.crawler-policy.outputs.blocked-count }}
-        run: test "$((ALLOWED_COUNT + BLOCKED_COUNT))" -eq 8
+          RESTRICTED_COUNT: ${{ steps.crawler-policy.outputs.restricted-count }}
+        run: test "$((ALLOWED_COUNT + BLOCKED_COUNT))" -eq 8 && test "$RESTRICTED_COUNT" -ge 0
