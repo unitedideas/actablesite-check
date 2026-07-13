@@ -11,7 +11,7 @@ It reports the homepage rule for:
 
 The checker separates search discovery, user-requested retrieval, model training, and ad validation instead of treating every “AI bot” as the same thing.
 
-Want alerts when the result changes? [Crawler Watch](https://actablesite.com/crawler-watch?utm_source=github&utm_medium=repository&utm_campaign=crawler-watch) checks this policy plus external homepage responses, `sitemap.xml`, and `llms.txt` every 15 minutes. It confirms a changed state twice before emailing you.
+Want alerts when the result changes? [Crawler Watch](https://actablesite.com/crawler-watch?utm_source=github&utm_medium=action&utm_campaign=crawler-watch) checks this policy plus external homepage responses, `sitemap.xml`, and `llms.txt` every 15 minutes. It confirms a changed state twice before emailing you.
 
 ## Run it
 
@@ -27,7 +27,7 @@ actablesite-check example.com
 Or run the tagged release directly from GitHub:
 
 ```bash
-npx github:unitedideas/actablesite-check#v1.4.0 example.com
+npx github:unitedideas/actablesite-check#v1.4.1 example.com
 ```
 
 Compare robots.txt with three synthetic AI search-crawler homepage requests:
@@ -85,7 +85,7 @@ Use the free visual [Cloudflare AI crawler checker](https://actablesite.com/clou
 
 ## Ongoing monitoring
 
-[Crawler Watch](https://actablesite.com/crawler-watch) runs the eight-token policy check plus external homepage responses, `sitemap.xml`, and `llms.txt` every 15 minutes. A changed state must appear twice before it sends an email. The plan covers one public website for $9/month.
+[Crawler Watch](https://actablesite.com/crawler-watch?utm_source=github&utm_medium=action&utm_campaign=crawler-watch) runs the eight-token policy check plus external homepage responses, `sitemap.xml`, and `llms.txt` every 15 minutes. A changed state must appear twice before it sends an email. The plan covers one public website for $9/month.
 
 The external requests are synthetic. They do not authenticate provider IP ranges or prove crawling, indexing, citation, ranking, or traffic.
 

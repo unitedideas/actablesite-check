@@ -60,6 +60,21 @@ test("writes stable GitHub Action outputs and a summary", async () => {
   }
 });
 
+test("attributes Marketplace README continuations to the GitHub Action", async () => {
+  const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
+  const links = [...readme.matchAll(/\[Crawler Watch\]\(([^)]+)\)/g)].map((match) => new URL(match[1]));
+  assert.equal(links.length, 2);
+  for (const link of links) {
+    assert.equal(link.origin, "https://actablesite.com");
+    assert.equal(link.pathname, "/crawler-watch");
+    assert.deepEqual(Object.fromEntries(link.searchParams), {
+      utm_source: "github",
+      utm_medium: "action",
+      utm_campaign: "crawler-watch",
+    });
+  }
+});
+
 test("can fail a workflow when a checked token is blocked", async () => {
   await assert.rejects(
     runAction({

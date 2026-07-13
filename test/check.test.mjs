@@ -51,7 +51,7 @@ test("returns eight policy results without network access", async () => {
     return new Response("User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nAllow: /", { status: 200 });
   };
   const result = await checkWebsite("example.com", { fetchImpl });
-  assert.equal(userAgent, "actablesite-check/1.4.0");
+  assert.equal(userAgent, "actablesite-check/1.4.1");
   assert.equal(result.crawlers.length, 8);
   assert.equal(result.crawlers.find(({ agent }) => agent === "GPTBot").allowed, false);
   assert.equal(result.crawlers.find(({ agent }) => agent === "PerplexityBot").allowed, true);

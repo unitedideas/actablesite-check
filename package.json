@@ -1,6 +1,6 @@
 {
   "name": "actablesite-check",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Check AI crawler robots.txt policy and optional synthetic edge responses for Cloudflare and other WAF troubleshooting.",
   "author": "ActableSite",
   "type": "module",
