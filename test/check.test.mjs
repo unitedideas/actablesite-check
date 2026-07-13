@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { checkWebsite, crawlerWatchUrl, evaluateCrawlerAccess, normalizePublicUrl, parseRobotsGroups, starterPolicy } from "../lib/check.mjs";
+import { checkWebsite, crawlerWatchPitch, crawlerWatchUrl, evaluateCrawlerAccess, normalizePublicUrl, parseRobotsGroups, starterPolicy } from "../lib/check.mjs";
 
 test("publishes one explicit source-attributed monitoring path", () => {
   const url = new URL(crawlerWatchUrl);
@@ -11,6 +11,11 @@ test("publishes one explicit source-attributed monitoring path", () => {
     utm_medium: "cli",
     utm_campaign: "crawler-watch",
   });
+  assert.match(crawlerWatchPitch, /one public site/);
+  assert.match(crawlerWatchPitch, /15 minutes/);
+  assert.match(crawlerWatchPitch, /confirmed changes/);
+  assert.match(crawlerWatchPitch, /email/);
+  assert.match(crawlerWatchPitch, /\$9\/month/);
 });
 
 test("normalizes public domains to robots.txt", () => {
@@ -46,7 +51,7 @@ test("returns eight policy results without network access", async () => {
     return new Response("User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nAllow: /", { status: 200 });
   };
   const result = await checkWebsite("example.com", { fetchImpl });
-  assert.equal(userAgent, "actablesite-check/1.3");
+  assert.equal(userAgent, "actablesite-check/1.3.1");
   assert.equal(result.crawlers.length, 8);
   assert.equal(result.crawlers.find(({ agent }) => agent === "GPTBot").allowed, false);
   assert.equal(result.crawlers.find(({ agent }) => agent === "PerplexityBot").allowed, true);

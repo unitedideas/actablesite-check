@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { checkWebsite, crawlerWatchUrl, starterPolicy } from "../lib/check.mjs";
+import { checkWebsite, crawlerWatchPitch, crawlerWatchUrl, starterPolicy } from "../lib/check.mjs";
 
 const args = process.argv.slice(2);
 const json = args.includes("--json");
@@ -40,7 +40,8 @@ try {
       console.log(`${crawler.agent.padEnd(agentWidth)}  ${state.padEnd(7)}  ${crawler.provider} · ${crawler.purpose} · ${rule}`);
     }
     console.log("\nA robots rule does not prove network access, indexing, citation, or ranking.");
-    console.log(`Continuous change alerts: ${crawlerWatchUrl}\n`);
+    console.log(`\n${crawlerWatchPitch}`);
+    console.log(`${crawlerWatchUrl}\n`);
   }
 } catch (error) {
   console.error(`actablesite-check: ${error instanceof Error ? error.message : "check failed"}`);
