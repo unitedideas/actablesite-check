@@ -25,7 +25,7 @@ actablesite-check example.com
 Or run the tagged release directly from GitHub:
 
 ```bash
-npx github:unitedideas/actablesite-check#v1.1.0 example.com
+npx github:unitedideas/actablesite-check#v1.2.0 example.com
 ```
 
 Machine-readable output:

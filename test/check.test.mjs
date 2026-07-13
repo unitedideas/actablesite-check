@@ -1,6 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { checkWebsite, evaluateCrawlerAccess, normalizePublicUrl, parseRobotsGroups, starterPolicy } from "../lib/check.mjs";
+import { checkWebsite, crawlerWatchUrl, evaluateCrawlerAccess, normalizePublicUrl, parseRobotsGroups, starterPolicy } from "../lib/check.mjs";
+
+test("publishes one explicit source-attributed monitoring path", () => {
+  const url = new URL(crawlerWatchUrl);
+  assert.equal(url.origin, "https://actablesite.com");
+  assert.equal(url.pathname, "/crawler-watch");
+  assert.deepEqual(Object.fromEntries(url.searchParams), {
+    utm_source: "actablesite-check",
+    utm_medium: "cli",
+    utm_campaign: "crawler-watch",
+  });
+});
 
 test("normalizes public domains to robots.txt", () => {
   assert.equal(normalizePublicUrl("example.com/path?q=1").toString(), "https://example.com/robots.txt");
@@ -29,8 +40,13 @@ test("uses longest path and Allow on an equal-length tie", () => {
 });
 
 test("returns eight policy results without network access", async () => {
-  const fetchImpl = async () => new Response("User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nAllow: /", { status: 200 });
+  let userAgent;
+  const fetchImpl = async (_url, options) => {
+    userAgent = options.headers["user-agent"];
+    return new Response("User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nAllow: /", { status: 200 });
+  };
   const result = await checkWebsite("example.com", { fetchImpl });
+  assert.equal(userAgent, "actablesite-check/1.2");
   assert.equal(result.crawlers.length, 8);
   assert.equal(result.crawlers.find(({ agent }) => agent === "GPTBot").allowed, false);
   assert.equal(result.crawlers.find(({ agent }) => agent === "PerplexityBot").allowed, true);
