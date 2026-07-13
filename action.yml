@@ -1,5 +1,5 @@
 name: ActableSite AI Crawler Policy and Edge Check
-description: Check robots.txt policy and optional synthetic edge responses for OpenAI, Anthropic, and Perplexity search crawlers.
+description: Monitor robots.txt policy and optional edge responses for OpenAI, Anthropic, and Perplexity behind Cloudflare or other WAFs.
 author: ActableSite
 
 inputs:

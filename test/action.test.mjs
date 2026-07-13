@@ -75,6 +75,13 @@ test("attributes Marketplace README continuations to the GitHub Action", async (
   }
 });
 
+test("Marketplace metadata names the monitoring job and edge context", async () => {
+  const metadata = await readFile(new URL("../action.yml", import.meta.url), "utf8");
+  const description = metadata.match(/^description: (.+)$/m)?.[1] || "";
+  assert.equal(description, "Monitor robots.txt policy and optional edge responses for OpenAI, Anthropic, and Perplexity behind Cloudflare or other WAFs.");
+  assert.ok(description.length <= 125);
+});
+
 test("can fail a workflow when a checked token is blocked", async () => {
   await assert.rejects(
     runAction({
