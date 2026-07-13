@@ -2,6 +2,8 @@ import { appendFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { checkWebsite } from "../lib/check.mjs";
 
+export const crawlerWatchActionUrl = "https://actablesite.com/crawler-watch?utm_source=github&utm_medium=action&utm_campaign=crawler-watch";
+
 function markdown(value) {
   return String(value).replaceAll("|", "\\|").replaceAll("\n", " ");
 }
@@ -29,7 +31,7 @@ export async function runAction({
       .join("\n");
     await appendFile(
       summaryFile,
-      `## AI crawler policy for ${markdown(result.site)}\n\nrobots.txt: **${markdown(result.state)}** (HTTP ${result.responseStatus})\n\n| Token | Homepage rule | Purpose |\n|---|---|---|\n${rows}\n\nA robots rule does not prove network access, indexing, citation, or ranking.\n`,
+      `## AI crawler policy for ${markdown(result.site)}\n\nrobots.txt: **${markdown(result.state)}** (HTTP ${result.responseStatus})\n\n| Token | Homepage rule | Purpose |\n|---|---|---|\n${rows}\n\nA robots rule does not prove network access, indexing, citation, or ranking.\n\n### Keep watching between workflow runs\n\nThis Action is a point-in-time check. [Crawler Watch](${crawlerWatchActionUrl}) checks one public site every 15 minutes, confirms a changed state twice, and emails the evidence for $9/month.\n`,
       "utf8",
     );
   }

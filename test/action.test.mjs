@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { runAction } from "../action/run.mjs";
+import { crawlerWatchActionUrl, runAction } from "../action/run.mjs";
 
 const fakeResult = {
   site: "https://example.com/",
@@ -30,7 +30,11 @@ test("writes stable GitHub Action outputs and a summary", async () => {
     assert.equal(run.allowedCount, 1);
     assert.equal(run.blockedCount, 1);
     assert.match(await readFile(outputFile, "utf8"), /blocked-count=1/);
-    assert.match(await readFile(summaryFile, "utf8"), /GPTBot \| Blocked/);
+    const summary = await readFile(summaryFile, "utf8");
+    assert.match(summary, /GPTBot \| Blocked/);
+    assert.match(summary, /point-in-time check/);
+    assert.match(summary, /\$9\/month/);
+    assert.ok(summary.includes(crawlerWatchActionUrl));
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
