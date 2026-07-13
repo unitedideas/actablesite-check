@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { checkEdgeResponses, checkWebsite, classifySyntheticResponse, crawlerWatchPitch, crawlerWatchUrl, evaluateCrawlerAccess, normalizePublicUrl, parseRobotsGroups, starterPolicy, syntheticResponseLimit } from "../lib/check.mjs";
+import { checkEdgeResponses, checkHomepageIndexability, checkWebsite, classifySyntheticResponse, crawlerWatchPitch, crawlerWatchUrl, evaluateCrawlerAccess, homepageIndexabilityLimit, normalizePublicUrl, parseHomepageIndexability, parseRobotsGroups, starterPolicy, syntheticResponseLimit } from "../lib/check.mjs";
 
 test("publishes one explicit source-attributed monitoring path", () => {
   const url = new URL(crawlerWatchUrl);
@@ -11,7 +11,8 @@ test("publishes one explicit source-attributed monitoring path", () => {
     utm_medium: "cli",
     utm_campaign: "crawler-watch",
   });
-  assert.match(crawlerWatchPitch, /one public site/);
+  assert.match(crawlerWatchPitch, /homepage indexability/);
+  assert.match(crawlerWatchPitch, /AI crawler policy/);
   assert.match(crawlerWatchPitch, /15 minutes/);
   assert.match(crawlerWatchPitch, /confirmed changes/);
   assert.match(crawlerWatchPitch, /email/);
@@ -51,7 +52,7 @@ test("returns eight policy results without network access", async () => {
     return new Response("User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nAllow: /", { status: 200 });
   };
   const result = await checkWebsite("example.com", { fetchImpl });
-  assert.equal(userAgent, "actablesite-check/1.4.2");
+  assert.equal(userAgent, "actablesite-check/1.5.0");
   assert.equal(result.crawlers.length, 8);
   assert.equal(result.crawlers.find(({ agent }) => agent === "GPTBot").allowed, false);
   assert.equal(result.crawlers.find(({ agent }) => agent === "PerplexityBot").allowed, true);
@@ -62,6 +63,37 @@ test("treats a missing robots.txt as unrestricted there", async () => {
   const result = await checkWebsite("example.com", { fetchImpl });
   assert.equal(result.state, "missing");
   assert.equal(result.crawlers.every(({ allowed }) => allowed), true);
+});
+
+test("normalizes homepage robots directives and canonical evidence", () => {
+  const result = parseHomepageIndexability({
+    body: `<html><head><meta content="max-image-preview:large, NOINDEX" name="robots"><link href="/preferred" rel="alternate canonical"></head></html>`,
+    finalUrl: "https://example.com/start",
+    status: 200,
+    xRobotsTag: "noarchive, max-snippet:50",
+  });
+  assert.deepEqual(result.metaRobots, ["max-image-preview:large", "noindex"]);
+  assert.deepEqual(result.xRobotsTag, ["max-snippet:50", "noarchive"]);
+  assert.equal(result.canonicalUrl, "https://example.com/preferred");
+  assert.equal(result.noindex, true);
+});
+
+test("checks returned homepage HTML and headers without browser rendering", async () => {
+  let userAgent;
+  const fetchImpl = async (_url, options) => {
+    userAgent = options.headers["user-agent"];
+    return new Response(`<meta name="robots" content="index,follow"><link rel="canonical" href="https://example.com/">`, {
+      status: 200,
+      headers: { "x-robots-tag": "max-snippet:100" },
+    });
+  };
+  const result = await checkHomepageIndexability("example.com", { fetchImpl });
+  assert.equal(userAgent, "actablesite-check/1.5.0");
+  assert.equal(result.responseStatus, 200);
+  assert.deepEqual(result.metaRobots, ["follow", "index"]);
+  assert.deepEqual(result.xRobotsTag, ["max-snippet:100"]);
+  assert.equal(result.noindex, false);
+  assert.match(homepageIndexabilityLimit, /without running browser JavaScript/);
 });
 
 test("classifies bounded synthetic response states", () => {

@@ -1,5 +1,5 @@
-name: ActableSite AI Crawler Policy and Edge Check
-description: Monitor robots.txt policy and optional edge responses for OpenAI, Anthropic, and Perplexity behind Cloudflare or other WAFs.
+name: ActableSite Indexability and AI Crawler Check
+description: Guard robots.txt, homepage noindex, canonical, and optional AI-crawler edge responses in GitHub Actions.
 author: ActableSite
 
 inputs:
@@ -8,6 +8,14 @@ inputs:
     required: true
   fail-on-blocked:
     description: Fail the workflow when one or more checked crawler tokens are blocked.
+    required: false
+    default: "false"
+  check-homepage-indexability:
+    description: Inspect homepage status, robots meta, X-Robots-Tag, and canonical in the returned HTML and headers.
+    required: false
+    default: "true"
+  fail-on-noindex:
+    description: Fail when an enabled homepage check finds noindex in robots meta or X-Robots-Tag.
     required: false
     default: "false"
   check-edge-responses:
@@ -29,6 +37,12 @@ outputs:
   blocked-count:
     description: Number of checked crawler tokens blocked for the homepage path.
     value: ${{ steps.check.outputs.blocked-count }}
+  indexability-result:
+    description: Compact JSON result for the homepage status, directives, and canonical check, or null when disabled.
+    value: ${{ steps.check.outputs.indexability-result }}
+  noindex-found:
+    description: Whether the enabled homepage check found noindex.
+    value: ${{ steps.check.outputs.noindex-found }}
   edge-result:
     description: Compact JSON result for the optional synthetic homepage responses, or null when disabled.
     value: ${{ steps.check.outputs.edge-result }}
@@ -44,6 +58,8 @@ runs:
       env:
         INPUT_WEBSITE: ${{ inputs.website }}
         INPUT_FAIL_ON_BLOCKED: ${{ inputs.fail-on-blocked }}
+        INPUT_CHECK_HOMEPAGE_INDEXABILITY: ${{ inputs.check-homepage-indexability }}
+        INPUT_FAIL_ON_NOINDEX: ${{ inputs.fail-on-noindex }}
         INPUT_CHECK_EDGE_RESPONSES: ${{ inputs.check-edge-responses }}
         INPUT_FAIL_ON_RESTRICTED: ${{ inputs.fail-on-restricted }}
       run: node "$GITHUB_ACTION_PATH/action/run.mjs"

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { checkEdgeResponses, checkWebsite, crawlerWatchPitch, crawlerWatchUrl, starterPolicy } from "../lib/check.mjs";
+import { checkEdgeResponses, checkHomepageIndexability, checkWebsite, crawlerWatchPitch, crawlerWatchUrl, starterPolicy } from "../lib/check.mjs";
 
 const args = process.argv.slice(2);
 const json = args.includes("--json");
@@ -13,7 +13,7 @@ if (help || (!target && !starter)) {
   console.log(`actablesite-check <website> [--edge] [--json]
 actablesite-check --starter
 
-Checks the homepage robots.txt policy for eight current AI crawler tokens.
+Checks homepage indexability signals and robots.txt policy for eight current AI crawler tokens.
 With --edge, also sends synthetic OAI-SearchBot, Claude-SearchBot, and PerplexityBot homepage requests.
 
 Examples:
@@ -30,15 +30,22 @@ if (starter) {
 }
 
 try {
-  const [policy, edgeResponses] = await Promise.all([
+  const [policy, indexability, edgeResponses] = await Promise.all([
     checkWebsite(target),
+    checkHomepageIndexability(target),
     edge ? checkEdgeResponses(target) : Promise.resolve(null),
   ]);
-  const result = edgeResponses ? { ...policy, edge: edgeResponses } : policy;
+  const result = { ...policy, indexability, ...(edgeResponses ? { edge: edgeResponses } : {}) };
   if (json) {
     console.log(JSON.stringify(result, null, 2));
   } else {
-    console.log(`\nAI crawler policy for ${result.site}`);
+    console.log(`\nIndexability state for ${result.site}`);
+    console.log(`homepage: ${indexability.state} · ${indexability.responseStatus === null ? "no response" : `HTTP ${indexability.responseStatus}`}`);
+    console.log(`robots meta: ${indexability.metaRobots.length ? indexability.metaRobots.join(", ") : "not declared"}`);
+    console.log(`X-Robots-Tag: ${indexability.xRobotsTag.length ? indexability.xRobotsTag.join(", ") : "not declared"}`);
+    console.log(`canonical: ${indexability.canonicalUrl || "not declared"}`);
+    console.log(`noindex found: ${indexability.noindex ? "yes" : "no"}`);
+    console.log(`\nAI crawler policy`);
     console.log(`robots.txt: ${result.state} · HTTP ${result.responseStatus}\n`);
     const agentWidth = Math.max(...result.crawlers.map(({ agent }) => agent.length));
     for (const crawler of result.crawlers) {
@@ -55,7 +62,8 @@ try {
       console.log(`Cloudflare response headers observed: ${edgeResponses.cloudflareObserved ? "yes" : "no"}`);
       console.log(`\n${edgeResponses.limits}`);
     }
-    console.log("\nA robots rule does not prove network access, indexing, citation, or ranking.");
+    console.log(`\n${indexability.limits}`);
+    console.log("A robots rule does not prove network access, indexing, citation, or ranking.");
     console.log(`\n${crawlerWatchPitch}`);
     console.log(`${crawlerWatchUrl}\n`);
   }

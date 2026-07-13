@@ -1,7 +1,7 @@
 {
   "name": "actablesite-check",
-  "version": "1.4.2",
-  "description": "Check AI crawler robots.txt policy and optional synthetic edge responses for Cloudflare and other WAF troubleshooting.",
+  "version": "1.5.0",
+  "description": "Check homepage indexability, AI crawler robots.txt policy, and optional synthetic edge responses.",
   "author": "ActableSite",
   "type": "module",
   "bin": {
@@ -29,6 +29,9 @@
   "homepage": "https://actablesite.com/ai-crawler-checker",
   "keywords": [
     "robots.txt",
+    "noindex",
+    "canonical",
+    "technical SEO",
     "AI crawler",
     "OAI-SearchBot",
     "GPTBot",
