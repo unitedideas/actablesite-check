@@ -60,10 +60,10 @@ test("writes stable GitHub Action outputs and a summary", async () => {
   }
 });
 
-test("attributes Marketplace README continuations to the GitHub Action", async () => {
+test("attributes the README comparison and monitoring continuations", async () => {
   const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
   const links = [...readme.matchAll(/\[Crawler Watch\]\(([^)]+)\)/g)].map((match) => new URL(match[1]));
-  assert.equal(links.length, 2);
+  assert.equal(links.length, 1);
   for (const link of links) {
     assert.equal(link.origin, "https://actablesite.com");
     assert.equal(link.pathname, "/crawler-watch");
@@ -73,6 +73,17 @@ test("attributes Marketplace README continuations to the GitHub Action", async (
       utm_campaign: "crawler-watch",
     });
   }
+
+  const comparisonMatch = readme.match(/\[Compare robots\.txt monitoring approaches\]\(([^)]+)\)/);
+  assert.ok(comparisonMatch);
+  const comparisonLink = new URL(comparisonMatch[1]);
+  assert.equal(comparisonLink.origin, "https://actablesite.com");
+  assert.equal(comparisonLink.pathname, "/robots-txt-monitoring-tools");
+  assert.deepEqual(Object.fromEntries(comparisonLink.searchParams), {
+    utm_source: "github",
+    utm_medium: "repository",
+    utm_campaign: "robots-monitoring-comparison",
+  });
 });
 
 test("Marketplace metadata names the monitoring job and edge context", async () => {

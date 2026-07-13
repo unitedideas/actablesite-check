@@ -1,6 +1,6 @@
-# actablesite-check
+# AI crawler robots.txt monitoring — CLI and GitHub Action
 
-A dependency-free command-line and GitHub Action checker for AI crawler robots.txt policy and optional synthetic homepage responses. The optional edge check helps expose cases where robots.txt permits AI search discovery but Cloudflare or another WAF still returns a restricted response.
+A dependency-free command-line tool and schedulable GitHub Action for monitoring AI crawler robots.txt policy and optional synthetic homepage responses. The optional edge check helps expose cases where robots.txt permits AI search discovery but Cloudflare or another WAF still returns a restricted response.
 
 It reports the homepage rule for:
 
@@ -11,7 +11,7 @@ It reports the homepage rule for:
 
 The checker separates search discovery, user-requested retrieval, model training, and ad validation instead of treating every “AI bot” as the same thing.
 
-Want alerts when the result changes? [Crawler Watch](https://actablesite.com/crawler-watch?utm_source=github&utm_medium=action&utm_campaign=crawler-watch) checks this policy plus external homepage responses, `sitemap.xml`, and `llms.txt` every 15 minutes. It confirms a changed state twice before emailing you.
+Choosing a monitoring layer? [Compare robots.txt monitoring approaches](https://actablesite.com/robots-txt-monitoring-tools?utm_source=github&utm_medium=repository&utm_campaign=robots-monitoring-comparison) by what they actually watch: file changes, resolved policy, real crawler logs, general page changes, or edge enforcement.
 
 ## Run it
 
