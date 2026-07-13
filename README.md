@@ -69,6 +69,12 @@ Private and local-network targets are rejected. Responses are limited to 1 MB an
 
 Use the free visual checker at [actablesite.com/ai-crawler-checker](https://actablesite.com/ai-crawler-checker). ActableSite also provides a broader public website readiness scan and a one-time repair report.
 
+## Ongoing monitoring
+
+[Crawler Watch](https://actablesite.com/crawler-watch) runs the eight-token policy check plus external homepage responses, `sitemap.xml`, and `llms.txt` every 15 minutes. A changed state must appear twice before it sends an email. The plan covers one public website for $9/month.
+
+The external requests are synthetic. They do not authenticate provider IP ranges or prove crawling, indexing, citation, ranking, or traffic.
+
 ## Development
 
 ```bash
