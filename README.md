@@ -11,6 +11,8 @@ It reports the homepage rule for:
 
 The checker separates search discovery, user-requested retrieval, model training, and ad validation instead of treating every “AI bot” as the same thing.
 
+Want alerts when the result changes? [Crawler Watch](https://actablesite.com/crawler-watch?utm_source=github&utm_medium=repository&utm_campaign=crawler-watch) checks this policy plus external homepage responses, `sitemap.xml`, and `llms.txt` every 15 minutes. It confirms a changed state twice before emailing you.
+
 ## Run it
 
 Node.js 20 or newer is required.
